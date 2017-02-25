@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html ng-app="MyApp">
+<head>
+	<p>TO-DO CheckBox List using NodeJS and Sequelize</p>
+	<title>TO-DO CheckBox List using NodeJS and Sequelize</title>
+	<style>
+
+		* {
+			font-size: 16px;
+			font-family: 'Titillium Web'; 
+		}
+		.checkboxList {
+			border: 5px solid;
+			background-color: #fff; 
+			color: #000;
+			width: 500px; 
+			height: 200px; 
+			overflow-y: scroll;
+		}
+
+	</style>
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.0/angular.min.js"></script>
+	<script src="controller.js"></script>
+</head>
+
+<body  ng-controller="TODOListCtrl">
+	<div>Add New Items: <input type="text" ng-model="taskData.name" placeholder="Enter a new Item"
+		ng-keydown="onEnterAdd($event)" autofocus/>&nbsp;
+		<button type="button" ng-click="addToList()" >Add to List</button>
+
+	</div><br>
+	TO-DO:
+	<select ng-model="filterItem.filter" ng-options="task.name for task in filterOptions.filters" ></select>
+
+	<div id="todoCheckboxList" class="checkboxList">
+		<div ng-repeat="task in tasks | filter:customFilter">
+			<label>
+				<input type="checkbox" ng-model="task.isChecked" ng-change="isCheckedChanged(task.id, task.isChecked)" />
+				<span>{{task.name}}</span>&nbsp;
+				<button type="button" ng-click="remove(task.id)" >Remove</button>
+				<button type="button" ng-show="!showEdit" ng-click="newName=task.name; showEdit=true">Edit</button>
+				<div ng-show="showEdit" >
+					<input type="text" ng-model="newName" ng-keyup="onEnterUpdate($event,task.id,newName)?showEdit=false:showEdit=true;" autofocus/>
+					<input type="button" value="Update" ng-click="updateName(task.id, newName); showEdit = false;"/>
+				</div>
+			</label>
+		</div>
+	</div>
+
+	<br />
+	State:
+	<div>
+		<div ng-repeat="task in tasks">
+			<span>{{task.name}}</span>&nbsp;
+			<span>{{task.isChecked}}<br />
+			</div>
+		</div>
+	</body>
+	</html>
