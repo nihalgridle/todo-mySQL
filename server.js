@@ -79,7 +79,6 @@ sequelize
     //api
     //get all todos
     app.get('/api/todos', function(req, res) {
-
         //use findALl() to get all todos in the database
         Todo.findAll().then(function(todos) {
             res.json(todos);
@@ -93,37 +92,42 @@ sequelize
         //console.log(req.body);
         //update name of todo
         if (!req.body.name && req.body.newName && req.body.id) {
-            Todo.update({name : req.body.newName}, {where: {id : req.body.id}}).then(function(todos) {
+            Todo.update({name : req.body.newName}, {where: {id : req.body.id}})
+            .then(function(todo) {
                 //get and return all the todos after updating a todo
-                Todo.findAll().then(function(todos) {
-                    res.json(todos);
-                }, function(err){
-                    res.send(err);
-                });
-            }, function(err){
+                return Todo.findAll();
+            })
+            .then(function(todos) {
+                res.json(todos);
+            }, function(err) {
                 res.send(err);
             });
         }
         else if (!req.body.name && req.body.id) {
-            Todo.update({isChecked : req.body.isChecked}, {where: {id : req.body.id}}).then(function(todos) {
-                
-            }, function(err){
+            //update isChecked attribute of a todo
+            Todo.update({isChecked : req.body.isChecked}, {where: {id : req.body.id}})
+            .then(function(todo) {
+                return Todo.findAll();
+            }, function(err) {
+                res.send(err);
+            })
+            .then(function(todos) {
+                res.json(todos);
+            }, function(err) {
                 res.send(err);
             });
         }
         else if (req.body.name) {
-            Todo.create({name : req.body.name, isChecked : false }).then(function(todo) {
-                
+            Todo.create({name : req.body.name, isChecked : false })
+            .then(function(todo) {
                 //get and return all the todos after creating a todo
-                //use findALl() to get all todos in the database
-                Todo.findAll().then(function(todos) {
-                    res.json(todos);
-                }, function(err){
-                    res.send(err);
-                });
-            }, function(err){
+                return Todo.findAll();
+            })
+            .then(function(todos) {
+                res.json(todos);
+            }, function(err) {
                 res.send(err);
-            });
+            });   
         }
     });
 
@@ -136,16 +140,16 @@ sequelize
 
         Todo.destroy({
             where: {id : req.params.todo_id}
-        }).then(function(todo) {
+        })
+        .then(function(todo) {
             //get and return all the todos after deleting todo
-            Todo.findAll().then(function(todos) {
-                res.json(todos);
-            }, function(err){
-                res.send(err);
-            });
-        }, function(err){
+            return Todo.findAll();
+        })
+        .then(function(todos) {
+            res.json(todos);
+        }, function(err) {
             res.send(err);
-        });    
+        });
     });
 
 app.listen(port, function() {
