@@ -21,6 +21,6 @@
     "express": "^4.14.1",
     "mongoose": "^4.8.3",
     "mysql": "^2.13.0",
-    "sequelize": "^3.30.2"
+    "sequelize": "^5.3.0"
   }
 }
